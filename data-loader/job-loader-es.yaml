@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tpcds-es-web-sales
+spec:
+  completions: 8
+  parallelism: 8
+  completionMode: Indexed
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: loader
+        image: python:3.11-slim
+        command: ["bash","-lc"]
+        env:
+          - name: BUCKET_ID
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+          - name: ES_USER
+            valueFrom:
+              secretKeyRef:
+                name: es-credentials
+                key: ES_USER
+          - name: ES_PASS
+            valueFrom:
+              secretKeyRef:
+                name: es-credentials
+                key: ES_PASS
+        args:
+          - |
+            pip -q install requests &&
+            python -u /app/loader.py \
+              --mode es_load_bucket \
+              --trino http://trino:8080 \
+              --trino-user bench \
+              --sf 50 \
+              --es https://es-es-http:9200 \
+              --es-user "$ES_USER" \
+              --es-pass "$ES_PASS" \
+              --es-insecure \
+              --table web_sales \
+              --key-col ws_order_number \
+              --buckets 8 \
+              --bucket-id "$BUCKET_ID" \
+              --batch-rows 5000 \
+              --es-index tpcds_web_sales
+        volumeMounts:
+          - name: app
+            mountPath: /app
+      volumes:
+        - name: app
+          configMap:
+            name: trino-es-loader
+            defaultMode: 0755
