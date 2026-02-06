@@ -1,0 +1,4 @@
+tmp/*
+.ansible_cache
+.venv/
+*.pyc
