@@ -1,0 +1,174 @@
+---
+- name: Install ECK operator CRDs
+  kubernetes.core.k8s:
+    state: present
+    src: "https://download.elastic.co/downloads/eck/{{ eck_version }}/crds.yaml"
+  register: eck_crds
+
+- name: Install ECK operator
+  kubernetes.core.k8s:
+    state: present
+    src: "https://download.elastic.co/downloads/eck/{{ eck_version }}/operator.yaml"
+  register: eck_operator
+
+- name: Wait for ECK operator to be ready
+  kubernetes.core.k8s_info:
+    api_version: apps/v1
+    kind: StatefulSet
+    name: elastic-operator
+    namespace: elastic-system
+  register: eck_operator_sts
+  until:
+    - eck_operator_sts.resources | length > 0
+    - eck_operator_sts.resources[0].status.readyReplicas | default(0) >= 1
+  retries: 30
+  delay: 10
+
+- name: Create Elasticsearch cluster CR
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: elasticsearch.k8s.elastic.co/v1
+      kind: Elasticsearch
+      metadata:
+        name: "{{ elasticsearch_cluster_name }}"
+        namespace: "{{ namespace }}"
+      spec:
+        version: "{{ elasticsearch_version }}"
+        nodeSets:
+          - name: nodes
+            count: "{{ elasticsearch_node_count }}"
+            config:
+              node.store.allow_mmap: false
+              logger.org.elasticsearch: "{{ elasticsearch_log_level }}"
+
+            podTemplate:
+              spec:
+                containers:
+                  - name: elasticsearch
+                    resources:
+                      requests:
+                        memory: "{{ elasticsearch_memory_request }}"
+                        cpu: "{{ elasticsearch_cpu_request }}"
+                      limits:
+                        memory: "{{ elasticsearch_memory_limit }}"
+                        cpu: "{{ elasticsearch_cpu_limit }}"
+                    env:
+                      - name: ES_JAVA_OPTS
+                        value: "-Xms{{ elasticsearch_heap_size }} -Xmx{{ elasticsearch_heap_size }}"
+            volumeClaimTemplates:
+              - metadata:
+                  name: elasticsearch-data
+                spec:
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: "{{ elasticsearch_storage_size }}"
+                  storageClassName: "{{ storage_class }}"
+  register: es_cluster
+
+- name: Wait for Elasticsearch cluster to be ready
+  kubernetes.core.k8s_info:
+    api_version: elasticsearch.k8s.elastic.co/v1
+    kind: Elasticsearch
+    name: "{{ elasticsearch_cluster_name }}"
+    namespace: "{{ namespace }}"
+  register: es_status
+  until:
+    - es_status.resources | length > 0
+    - es_status.resources[0].status.phase | default('') == 'Ready'
+  retries: 60
+  delay: 15
+
+- name: Get Elasticsearch service info
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Service
+    name: "{{ elasticsearch_cluster_name }}-es-http"
+    namespace: "{{ namespace }}"
+  register: es_service
+
+- name: Wait for Elasticsearch pods to be ready
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ namespace }}"
+    label_selectors:
+      - "elasticsearch.k8s.elastic.co/cluster-name={{ elasticsearch_cluster_name }}"
+  register: es_pods
+  until:
+    - es_pods.resources | length >= elasticsearch_node_count
+    - es_pods.resources | selectattr('status.phase', 'equalto', 'Running') | list | length >= elasticsearch_node_count
+  retries: 40
+  delay: 15
+
+- name: Set Elasticsearch pod name
+  ansible.builtin.set_fact:
+    es_pod_name: "{{ es_pods.resources[0].metadata.name }}"
+
+- name: Get Elasticsearch password from secret
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ elasticsearch_cluster_name }}-es-elastic-user"
+    namespace: "{{ namespace }}"
+  register: es_secret
+
+- name: Decode Elasticsearch password
+  ansible.builtin.set_fact:
+    elasticsearch_password: "{{ es_secret.resources[0].data['elastic'] | b64decode }}"
+  when: es_secret.resources | length > 0
+
+- name: Get Elasticsearch CA certificate
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ elasticsearch_cluster_name }}-es-http-certs-public"
+    namespace: "{{ namespace }}"
+  register: es_ca_secret
+
+- name: Wait for Elasticsearch to accept connections
+  ansible.builtin.shell: |
+    kubectl exec -n {{ namespace }} {{ es_pod_name }} -- \
+      curl -s -k -u "elastic:{{ elasticsearch_password }}" "https://localhost:9200/_cluster/health"
+  register: es_health
+  until: es_health.rc == 0
+  retries: 30
+  delay: 10
+  when: elasticsearch_password is defined
+  changed_when: false
+
+- name: Store Elasticsearch credentials in a secret for Trino
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: trino-elasticsearch-credentials
+        namespace: "{{ namespace }}"
+      type: Opaque
+      stringData:
+        username: elastic
+        password: "{{ elasticsearch_password }}"
+  when: elasticsearch_password is defined
+
+- name: Display Elasticsearch connection info
+  ansible.builtin.debug:
+    msg: |
+      Elasticsearch deployed successfully via ECK!
+      
+      Cluster: {{ elasticsearch_cluster_name }}
+      Version: {{ elasticsearch_version }}
+      Nodes: {{ elasticsearch_node_count }}
+      
+      Service: {{ elasticsearch_cluster_name }}-es-http.{{ namespace }}.svc.cluster.local:9200
+      
+      Security: ENABLED (TLS + Authentication)
+      Username: elastic
+      Password: Stored in secret '{{ elasticsearch_cluster_name }}-es-elastic-user'
+      CA Cert: Stored in secret '{{ elasticsearch_cluster_name }}-es-http-certs-public'
+      
+      To get the password:
+        kubectl get secret {{ elasticsearch_cluster_name }}-es-elastic-user -n {{ namespace }} -o jsonpath='{.data.elastic}' | base64 -d

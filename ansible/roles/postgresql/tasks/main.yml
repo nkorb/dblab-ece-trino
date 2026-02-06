@@ -1,0 +1,75 @@
+---
+- name: Deploy PostgreSQL via Helm
+  kubernetes.core.helm:
+    name: postgresql
+    chart_ref: bitnami/postgresql
+    chart_version: "{{ postgresql_chart_version }}"
+    release_namespace: "{{ namespace }}"
+    create_namespace: false
+    wait: true
+    wait_timeout: "{{ helm_wait_timeout }}"
+    values: "{{ lookup('template', 'values.yml.j2') | from_yaml }}"
+  register: postgresql_deploy
+
+- name: Wait for PostgreSQL to be ready
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ namespace }}"
+    label_selectors:
+      - app.kubernetes.io/name=postgresql
+  register: postgresql_pods
+  until: 
+    - postgresql_pods.resources | length > 0
+    - postgresql_pods.resources[0].status.phase == "Running"
+  retries: 30
+  delay: 10
+
+- name: Drop TPC-DS database if exists (clean state)
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ postgresql_pods.resources[0].metadata.name }}"
+    command: >-
+      /bin/bash -c "PGPASSWORD={{ postgresql_password }} psql -U postgres -c 'DROP DATABASE IF EXISTS {{ postgresql_database }};'"
+  register: db_drop
+  ignore_errors: false
+
+- name: Drop TPC-DS user if exists (clean state)
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ postgresql_pods.resources[0].metadata.name }}"
+    command: >
+      /bin/bash -c "PGPASSWORD={{ postgresql_password }} psql -U postgres -c 'DROP USER IF EXISTS {{ postgresql_user }};'"
+  register: user_drop
+  ignore_errors: true
+
+- name: Create TPC-DS user
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ postgresql_pods.resources[0].metadata.name }}"
+    command: >
+      /bin/bash -c "PGPASSWORD={{ postgresql_password }} psql -U postgres -c \"CREATE USER {{ postgresql_user }} WITH PASSWORD '{{ postgresql_password }}';\""
+  register: user_create
+  failed_when:
+    - user_create.rc != 0
+    - "'already exists' not in user_create.stderr"
+
+- name: Create TPC-DS database
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ postgresql_pods.resources[0].metadata.name }}"
+    command: >
+      /bin/bash -c "PGPASSWORD={{ postgresql_password }} psql -U postgres -c 'CREATE DATABASE {{ postgresql_database }} OWNER {{ postgresql_user }};'"
+  register: db_create
+  failed_when:
+    - db_create.rc != 0
+    - "'already exists' not in db_create.stderr"
+
+- name: Display PostgreSQL connection info
+  ansible.builtin.debug:
+    msg: |
+      PostgreSQL deployed successfully!
+      Host: postgresql.{{ namespace }}.svc.cluster.local
+      Port: 5432
+      Database: {{ postgresql_database }}
+      User: {{ postgresql_user }}

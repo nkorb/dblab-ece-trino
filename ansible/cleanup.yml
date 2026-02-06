@@ -1,0 +1,103 @@
+---
+# cleanup.yml
+# Remove all benchmark infrastructure
+#
+# Usage:
+#   ansible-playbook cleanup.yml
+#   ansible-playbook cleanup.yml --tags "trino"      # Only remove Trino
+#   ansible-playbook cleanup.yml --tags "datastores" # Only remove datastores
+
+- name: Cleanup Trino Benchmark Infrastructure
+  hosts: k8s_master
+  become: false
+  gather_facts: false
+  
+  vars:
+    namespace: trino-benchmark
+    delete_namespace: true  # Set to false to keep namespace
+    delete_pvcs: true       # Set to false to keep data
+
+  tasks:
+    - name: Remove Trino Helm release
+      kubernetes.core.helm:
+        name: trino
+        namespace: "{{ namespace }}"
+        state: absent
+        wait: true
+      tags: [trino]
+      ignore_errors: true
+
+    - name: Remove Trino ConfigMap
+      kubernetes.core.k8s:
+        name: trino-catalog
+        namespace: "{{ namespace }}"
+        api_version: v1
+        kind: ConfigMap
+        state: absent
+      tags: [trino]
+      ignore_errors: true
+
+    - name: Remove Elasticsearch Helm release
+      kubernetes.core.helm:
+        name: elasticsearch
+        namespace: "{{ namespace }}"
+        state: absent
+        wait: true
+      tags: [datastores, elasticsearch]
+      ignore_errors: true
+
+    - name: Remove MongoDB Helm release
+      kubernetes.core.helm:
+        name: mongodb
+        namespace: "{{ namespace }}"
+        state: absent
+        wait: true
+      tags: [datastores, mongodb]
+      ignore_errors: true
+
+    - name: Remove PostgreSQL Helm release
+      kubernetes.core.helm:
+        name: postgresql
+        namespace: "{{ namespace }}"
+        state: absent
+        wait: true
+      tags: [datastores, postgresql]
+      ignore_errors: true
+
+    - name: Remove PVCs if requested
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: PersistentVolumeClaim
+        namespace: "{{ namespace }}"
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - data-postgresql-0
+        - data-mongodb-0
+        - elasticsearch-master-elasticsearch-master-0
+      when: delete_pvcs
+      tags: [datastores]
+      ignore_errors: true
+
+    - name: Remove namespace if requested
+      kubernetes.core.k8s:
+        name: "{{ namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: absent
+      when: delete_namespace
+      tags: always
+      ignore_errors: true
+
+    - name: Display cleanup status
+      ansible.builtin.debug:
+        msg: |
+          Cleanup completed!
+          
+          Removed:
+            - Trino cluster
+            - PostgreSQL
+            - MongoDB  
+            - Elasticsearch
+            {% if delete_pvcs %}- Persistent Volume Claims{% endif %}
+            {% if delete_namespace %}- Namespace {{ namespace }}{% endif %}

@@ -1,0 +1,95 @@
+---
+# site.yml - Main playbook for Trino Benchmark Infrastructure
+# Deploys PostgreSQL, MongoDB, Elasticsearch, and Trino on Kubernetes
+#
+# Usage:
+#   ansible-playbook site.yml -i inventory/hosts.yml
+#   ansible-playbook site.yml -i inventory/hosts.yml --tags "datastores"
+#   ansible-playbook site.yml -i inventory/hosts.yml --tags "trino"
+#   ansible-playbook site.yml -i inventory/hosts.yml -e "trino_workers=4"
+
+- name: Deploy Trino Benchmark Infrastructure
+  hosts: k8s_master
+  become: false
+  gather_facts: true
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ kubeconfig_path }}"
+  vars:
+    # Global settings
+    namespace: trino-benchmark
+    storage_class: local-path  # Change to your K8s storage class
+    
+    # Data store sizing (adjust based on your cluster)
+    postgresql_storage_size: 1Gi
+    mongodb_storage_size: 1Gi
+    elasticsearch_storage_size: 1Gi
+    
+    # Trino settings
+    trino_workers: 3
+    trino_coordinator_memory: 4Gi
+    trino_worker_memory: 4Gi
+    
+  pre_tasks:
+    - name: Create namespace for benchmark
+      kubernetes.core.k8s:
+        name: "{{ namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: present
+      tags: always
+      
+    - name: Add required Helm repositories
+      kubernetes.core.helm_repository:
+        name: "{{ item.name }}"
+        repo_url: "{{ item.url }}"
+      loop:
+        - { name: bitnami, url: "https://charts.bitnami.com/bitnami" }
+        - { name: elastic, url: "https://helm.elastic.co" }
+        - { name: trino, url: "https://trinodb.github.io/charts" }
+      tags: always
+
+  roles:
+    - role: postgresql
+      tags: [datastores, postgresql]
+      
+    - role: mongodb
+      tags: [datastores, mongodb]
+      
+    - role: elasticsearch
+      tags: [datastores, elasticsearch]
+      
+    - role: trino
+      tags: [trino]
+
+  post_tasks:
+    - name: Display connection information
+      ansible.builtin.debug:
+        msg: |
+          
+          =====================================================
+          Trino Benchmark Infrastructure Deployed Successfully
+          =====================================================
+          
+          Namespace: {{ namespace }}
+          
+          Trino Coordinator: 
+            - Internal: trino.{{ namespace }}.svc.cluster.local:8080
+            - Port-forward: kubectl port-forward svc/trino -n {{ namespace }} 8080:8080
+          
+          PostgreSQL:
+            - Internal: postgresql.{{ namespace }}.svc.cluster.local:5432
+            - Database: tpcds
+            - User: trino
+          
+          MongoDB:
+            - Internal: mongodb.{{ namespace }}.svc.cluster.local:27017
+            - Database: tpcds
+          
+          Elasticsearch:
+            - Internal: elasticsearch-master.{{ namespace }}.svc.cluster.local:9200
+          
+          To access Trino CLI:
+            kubectl exec -it deploy/trino-coordinator -n {{ namespace }} -- trino
+          
+          =====================================================
+      tags: always

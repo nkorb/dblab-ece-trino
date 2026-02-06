@@ -1,0 +1,189 @@
+---
+- name: Get Elasticsearch password from ECK secret
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ elasticsearch_cluster_name }}-es-elastic-user"
+    namespace: "{{ namespace }}"
+  register: es_secret
+
+- name: Set Elasticsearch password fact
+  ansible.builtin.set_fact:
+    elasticsearch_password: "{{ es_secret.resources[0].data['elastic'] | b64decode }}"
+  when: es_secret.resources | length > 0
+
+- name: Fail if Elasticsearch password not found
+  ansible.builtin.fail:
+    msg: "Elasticsearch password secret not found. Make sure Elasticsearch is deployed first."
+  when: elasticsearch_password is not defined
+
+- name: Get Elasticsearch CA certificate
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ elasticsearch_cluster_name }}-es-http-certs-public"
+    namespace: "{{ namespace }}"
+  register: es_ca_secret
+
+- name: Extract CA certificate
+  ansible.builtin.set_fact:
+    es_ca_cert: "{{ es_ca_secret.resources[0].data['ca.crt'] | b64decode }}"
+  when: es_ca_secret.resources | length > 0
+
+- name: Create temporary directory for truststore creation
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: trino-certs
+  register: temp_cert_dir
+
+- name: Write CA cert to temp file
+  ansible.builtin.copy:
+    content: "{{ es_ca_cert }}"
+    dest: "{{ temp_cert_dir.path }}/ca.crt"
+    mode: '0644'
+
+- name: Create JKS truststore from CA certificate
+  ansible.builtin.shell: |
+    keytool -importcert -trustcacerts -noprompt \
+      -alias elasticsearch-ca \
+      -file {{ temp_cert_dir.path }}/ca.crt \
+      -keystore {{ temp_cert_dir.path }}/truststore.jks \
+      -storepass {{ trino_truststore_password }}
+  args:
+    creates: "{{ temp_cert_dir.path }}/truststore.jks"
+
+- name: Read truststore file
+  ansible.builtin.slurp:
+    src: "{{ temp_cert_dir.path }}/truststore.jks"
+  register: truststore_content
+
+- name: Create secret with ES truststore for Trino
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: trino-es-truststore
+        namespace: "{{ namespace }}"
+      type: Opaque
+      data:
+        truststore.jks: "{{ truststore_content.content }}"
+
+- name: Clean up temp directory
+  ansible.builtin.file:
+    path: "{{ temp_cert_dir.path }}"
+    state: absent
+
+- name: Deploy Trino via Helm
+  kubernetes.core.helm:
+    name: trino
+    chart_ref: trino/trino
+    chart_version: "{{ trino_chart_version }}"
+    release_namespace: "{{ namespace }}"
+    create_namespace: false
+    wait: true
+    wait_timeout: "{{ helm_wait_timeout }}"
+    values: "{{ lookup('template', 'values.yml.j2') | from_yaml }}"
+  register: trino_deploy
+
+- name: Wait for Trino coordinator to be ready
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ namespace }}"
+    label_selectors:
+      - app=trino
+      - component=coordinator
+  register: trino_coordinator_pods
+  until: 
+    - trino_coordinator_pods.resources | length > 0
+    - trino_coordinator_pods.resources[0].status.phase == "Running"
+  retries: 30
+  delay: 10
+
+- name: Wait for Trino workers to be ready
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ namespace }}"
+    label_selectors:
+      - app=trino
+      - component=worker
+  register: trino_worker_pods
+  until: 
+    - trino_worker_pods.resources | length >= trino_workers
+    - trino_worker_pods.resources | selectattr('status.phase', 'equalto', 'Running') | list | length >= trino_workers
+  retries: 30
+  delay: 10
+  when: trino_workers > 0
+
+- name: Set Trino coordinator pod name
+  ansible.builtin.set_fact:
+    trino_coord_pod: "{{ trino_coordinator_pods.resources[0].metadata.name }}"
+
+- name: Verify Trino cluster is operational
+  ansible.builtin.shell: |
+    kubectl exec -n {{ namespace }} {{ trino_coord_pod }} -- \
+      trino --execute "SELECT node_id FROM system.runtime.nodes"
+  register: trino_nodes
+  retries: 10
+  delay: 10
+  until: trino_nodes.rc == 0
+  changed_when: false
+
+- name: Verify catalog connectivity - PostgreSQL
+  ansible.builtin.shell: |
+    kubectl exec -n {{ namespace }} {{ trino_coord_pod }} -- \
+      trino --catalog postgresql --execute "SHOW SCHEMAS"
+  register: pg_check
+  retries: 5
+  delay: 10
+  until: pg_check.rc == 0
+  ignore_errors: true
+  changed_when: false
+
+- name: Verify catalog connectivity - MongoDB
+  ansible.builtin.shell: |
+    kubectl exec -n {{ namespace }} {{ trino_coord_pod }} -- \
+      trino --catalog mongodb --execute "SHOW SCHEMAS"
+  register: mongo_check
+  retries: 5
+  delay: 10
+  until: mongo_check.rc == 0
+  ignore_errors: true
+  changed_when: false
+
+- name: Verify catalog connectivity - Elasticsearch
+  ansible.builtin.shell: |
+    kubectl exec -n {{ namespace }} {{ trino_coord_pod }} -- \
+      trino --catalog elasticsearch --execute "SHOW SCHEMAS"
+  register: es_check
+  retries: 5
+  delay: 10
+  until: es_check.rc == 0
+  ignore_errors: true
+  changed_when: false
+
+- name: Display Trino cluster info
+  ansible.builtin.debug:
+    msg: |
+      Trino deployed successfully!
+      
+      Coordinator: trino.{{ namespace }}.svc.cluster.local:8080
+      Workers: {{ trino_workers }}
+      
+      Active nodes: 
+      {{ trino_nodes.stdout | default('Unable to fetch') }}
+      
+      Catalog status:
+        - PostgreSQL: {{ 'OK' if pg_check.rc == 0 else 'FAILED - check connectivity' }}
+        - MongoDB: {{ 'OK' if mongo_check.rc == 0 else 'FAILED - check connectivity' }}
+        - Elasticsearch: {{ 'OK' if es_check.rc == 0 else 'FAILED - check connectivity' }}
+      
+      To access Trino CLI:
+        kubectl exec -it {{ trino_coord_pod }} -n {{ namespace }} -- trino
+      
+      To port-forward the UI:
+        kubectl port-forward svc/trino -n {{ namespace }} 8080:8080
+        Then open: http://localhost:8080

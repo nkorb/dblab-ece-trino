@@ -1,0 +1,81 @@
+# roles/postgresql/templates/values.yml.j2
+# Helm values for Bitnami PostgreSQL chart
+
+image:
+  registry: "{{ postgresql_image_registry }}"
+  repository: "{{ postgresql_image_repository }}"
+  tag: "{{ postgresql_image_tag }}"
+  pullPolicy: IfNotPresent
+
+global:
+  postgresql:
+    auth:
+      postgresPassword: "{{ postgresql_password }}"
+      username: "{{ postgresql_user }}"
+      password: "{{ postgresql_password }}"
+      database: "{{ postgresql_database }}"
+
+primary:
+  persistence:
+    enabled: true
+    storageClass: "{{ storage_class }}"
+    size: "{{ postgresql_storage_size }}"
+  
+  resources:
+    limits:
+      memory: "{{ postgresql_memory_limit }}"
+      cpu: "{{ postgresql_cpu_limit }}"
+    requests:
+      memory: "2Gi"
+      cpu: "500m"
+
+  # PostgreSQL configuration for OLAP workloads
+  extendedConfiguration: |
+    max_connections = 200
+    shared_buffers = 4GB
+    effective_cache_size = 12GB
+    maintenance_work_mem = 768MB
+    checkpoint_completion_target = 0.9
+    wal_buffers = 16MB
+    default_statistics_target = 100
+    random_page_cost = 1.1
+    effective_io_concurrency = 200
+    work_mem = 64ΜΒ
+    min_wal_size = 1GB
+    max_wal_size = 4GB
+    max_worker_processes = 16
+    max_parallel_workers_per_gather = 8
+    max_parallel_workers = 16
+    max_parallel_maintenance_workers = 2
+    parallel_setup_cost = 200
+    parallel_tuple_cost = 0.03
+    autovacuum_max_workers = 5
+    autovacuum_naptime = 10s
+    autovacuum_vacuum_cost_limit = 4000
+    autovacuum_vacuum_cost_delay = 2ms
+    fsync = off
+    full_page_writes = off
+    synchronous_commit = off
+
+  # Init container to set permissions
+  initdb:
+    scripts:
+      init.sql: |
+        -- Grant privileges for Trino access
+        GRANT ALL PRIVILEGES ON DATABASE {{ postgresql_database }} TO {{ postgresql_user }};
+        ALTER USER {{ postgresql_user }} WITH SUPERUSER;
+
+# Disable read replicas for simplicity
+readReplicas:
+  replicaCount: 0
+
+# Metrics for monitoring
+metrics:
+  enabled: {{ postgresql_exporter_enabled }}
+  image:
+    tag: "{{ postgresql_exporter_image_tag }}"
+    pullPolicy: IfNotPresent
+    registry: "{{ postgresql_exporter_image_registry }}"
+    repository: "{{ postgresql_exporter_image_repository }}"
+  serviceMonitor:
+    enabled: false  # Set to true if you have Prometheus Operator

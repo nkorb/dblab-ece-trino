@@ -1,0 +1,22 @@
+---
+mongodb_chart_version: "14.4.9"
+helm_wait_timeout: "600s"
+mongodb_image_registry: docker.io
+mongodb_image_repository: bitnamilegacy/mongodb
+mongodb_image_tag: "8.0.13-debian-12-r0"
+
+mongodb_exporter_enabled: false
+mongodb_exporter_image_registry: docker.io
+mongodb_exporter_image_repository: bitnamilegacy/mongodb-exporter
+mongodb_exporter_image_tag: "0.17.1-debian-12-r16"
+
+# MongoDB settings
+mongodb_user: trino
+mongodb_password: "trinopassword123"
+mongodb_root_password: "rootpassword123"
+mongodb_database: tpcds
+mongodb_storage_size: 100Gi
+
+# Resource limits
+mongodb_memory_limit: 8Gi
+mongodb_cpu_limit: 2

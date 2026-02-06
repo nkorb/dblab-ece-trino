@@ -1,0 +1,21 @@
+---
+postgresql_chart_version: "13.2.24"
+helm_wait_timeout: "600s"
+postgresql_image_registry: docker.io
+postgresql_image_repository: bitnamilegacy/postgresql
+postgresql_image_tag: "16.4.0-debian-12-r8"
+
+postgresql_exporter_enabled: false
+postgresql_exporter_image_registry: docker.io
+postgresql_exporter_image_repository: bitnamilegacy/postgres-exporter
+postgresql_exporter_image_tag: "0.17.1-debian-12-r16"
+
+# PostgreSQL settings
+postgresql_user: trino
+postgresql_password: trinopassword123
+postgresql_database: tpcds
+postgresql_storage_size: 10Gi
+
+# Resource limits
+postgresql_memory_limit: 4Gi
+postgresql_cpu_limit: 2

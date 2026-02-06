@@ -1,0 +1,54 @@
+---
+# Helm chart settings
+trino_chart_version: "1.41.0"
+helm_wait_timeout: "600s"
+
+# Trino cluster settings
+trino_workers: 3
+trino_coordinator_memory: 8Gi
+trino_coordinator_cpu: 2
+trino_worker_memory: 8Gi
+trino_worker_cpu: 2
+
+# Query settings
+trino_query_max_memory: 4GB
+trino_query_max_memory_per_node: 2GB
+trino_query_max_total_memory_per_node: 3GB
+
+# Datastore connection settings (should match other roles)
+postgresql_user: trino
+postgresql_password: "trinopassword123"
+postgresql_database: tpcds
+
+mongodb_user: trino
+mongodb_password: "trinopassword123"
+mongodb_database: tpcds
+
+elasticsearch_cluster_name: es
+trino_truststore_password: "changeit"
+
+# Logging level
+trino_log_level: INFO
+
+# Additional coordinator properties
+trino_coordinator_extra_config: |
+  query.max-history=100
+  query.min-expire-age=30m
+
+# Additional worker properties
+trino_worker_extra_config: ""
+
+# JVM settings
+trino_coordinator_jvm_config: |
+  -server
+  -Xmx6G
+  -XX:InitialRAMPercentage=80
+  -XX:MaxRAMPercentage=80
+  -XX:G1HeapRegionSize=32M
+
+trino_worker_jvm_config: |
+  -server
+  -Xmx6G
+  -XX:InitialRAMPercentage=80
+  -XX:MaxRAMPercentage=80
+  -XX:G1HeapRegionSize=32M

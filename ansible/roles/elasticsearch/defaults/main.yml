@@ -1,0 +1,20 @@
+---
+# ECK Operator version
+# Check latest at: https://www.elastic.co/guide/en/cloud-on-k8s/current/eck-release-notes.html
+eck_version: "3.2.0"
+
+# Elasticsearch version (application version, not chart)
+elasticsearch_version: "9.2.4"
+
+# Cluster settings
+elasticsearch_cluster_name: es
+elasticsearch_node_count: 3
+elasticsearch_storage_size: 5Gi
+
+# Resource settings
+elasticsearch_memory_request: 4Gi
+elasticsearch_memory_limit: 32Gi
+elasticsearch_cpu_request: "4"
+elasticsearch_cpu_limit: "4"
+elasticsearch_heap_size: 2g
+elasticsearch_log_level: INFO

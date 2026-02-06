@@ -1,0 +1,78 @@
+---
+- name: Deploy MongoDB via Helm
+  kubernetes.core.helm:
+    name: mongodb
+    chart_ref: "oci://registry-1.docker.io/bitnamicharts/mongodb"
+    chart_version: "{{ mongodb_chart_version }}"
+    release_namespace: "{{ namespace }}"
+    create_namespace: false
+    wait: true
+    wait_timeout: "{{ helm_wait_timeout }}"
+    values: "{{ lookup('template', 'values.yml.j2') | from_yaml }}"
+  register: mongodb_deploy
+
+- name: Wait for MongoDB pod to be running
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ namespace }}"
+    label_selectors:
+      - app.kubernetes.io/name=mongodb
+      - app.kubernetes.io/component=mongodb
+  register: mongodb_pods
+  until: 
+    - mongodb_pods.resources | length > 0
+    - mongodb_pods.resources[0].status.phase == "Running"
+    - mongodb_pods.resources[0].status.containerStatuses is defined
+    - mongodb_pods.resources[0].status.containerStatuses | selectattr('ready', 'equalto', true) | list | length > 0
+  retries: 30
+  delay: 10
+
+- name: Set MongoDB pod name
+  ansible.builtin.set_fact:
+    mongo_pod_name: "{{ mongodb_pods.resources[0].metadata.name }}"
+
+- name: Wait for MongoDB to accept connections
+  ansible.builtin.shell: |
+    kubectl exec -n {{ namespace }} {{ mongo_pod_name }} -- \
+      mongosh --username root --password '{{ mongodb_root_password }}' \
+      --authenticationDatabase admin --eval 'db.adminCommand("ping")'
+  register: mongo_ready
+  until: mongo_ready.rc == 0
+  retries: 30
+  delay: 5
+  changed_when: false
+
+- name: Drop TPC-DS database (clean state)
+  ansible.builtin.shell: |
+    kubectl exec -n {{ namespace }} {{ mongo_pod_name }} -- \
+      mongosh --username root --password '{{ mongodb_root_password }}' \
+      --authenticationDatabase admin {{ mongodb_database }} --eval 'db.dropDatabase()'
+  register: db_drop
+  ignore_errors: true
+  changed_when: "'dropped' in db_drop.stdout"
+
+- name: Grant roles (shell)
+  ansible.builtin.shell: |
+    kubectl exec -n {{ namespace }} {{ mongo_pod_name }} -- \
+      mongosh --quiet --username root --password '{{ mongodb_root_password }}' \
+      --authenticationDatabase admin admin \
+      --eval 'db.getSiblingDB("{{ mongodb_database }}").grantRolesToUser("{{ mongodb_user }}", [
+        { role: "readWrite", db: "{{ mongodb_database }}" },
+        { role: "dbAdmin",  db: "{{ mongodb_database }}" }
+      ]);'
+  register: grant_roles
+  changed_when: grant_roles.rc == 0
+  failed_when: grant_roles.rc != 0
+
+- name: Display MongoDB connection info
+  ansible.builtin.debug:
+    msg: |
+      MongoDB deployed successfully!
+      Host: mongodb.{{ namespace }}.svc.cluster.local
+      Port: 27017
+      Database: {{ mongodb_database }}
+      User: {{ mongodb_user }}
+      
+      Connection string for Trino:
+        mongodb://{{ mongodb_user }}:{{ mongodb_password }}@mongodb.{{ namespace }}.svc.cluster.local:27017/{{ mongodb_database }}?authSource={{ mongodb_database }}

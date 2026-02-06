@@ -1,0 +1,54 @@
+# roles/mongodb/templates/values.yml.j2
+# Helm values for Bitnami MongoDB chart
+
+architecture: standalone
+image:
+  registry: "{{ mongodb_image_registry }}"
+  repository: "{{ mongodb_image_repository }}"
+  tag: "{{ mongodb_image_tag }}"
+  pullPolicy: IfNotPresent
+auth:
+  enabled: true
+  rootUser: root
+  rootPassword: "{{ mongodb_root_password }}"
+  usernames:
+    - "{{ mongodb_user }}"
+  passwords:
+    - "{{ mongodb_password }}"
+  databases:
+    - "{{ mongodb_database }}"
+
+persistence:
+  enabled: true
+  storageClass: "{{ storage_class }}"
+  size: "{{ mongodb_storage_size }}"
+
+resources:
+  limits:
+    memory: "{{ mongodb_memory_limit }}"
+    cpu: "{{ mongodb_cpu_limit }}"
+  requests:
+    memory: "1Gi"
+    cpu: "500m"
+
+
+# Metrics for monitoring
+metrics:
+  enabled: {{ mongodb_exporter_enabled }}
+  serviceMonitor:
+    enabled: false  # Set to true if you have Prometheus Operator
+  # Metrics for monitoring
+  image:
+    tag: "{{ mongodb_exporter_image_tag }}"
+    pullPolicy: IfNotPresent
+    registry: "{{ mongodb_exporter_image_registry }}"
+    repository: "{{ mongodb_exporter_image_repository }}"
+  serviceMonitor:
+    enabled: false  # Set to true if you have Prometheus Operator
+
+
+# Service configuration
+service:
+  type: ClusterIP
+  ports:
+    mongodb: 27017

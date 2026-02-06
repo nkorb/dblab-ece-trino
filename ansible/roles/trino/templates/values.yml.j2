@@ -1,0 +1,66 @@
+server:
+  workers: 3
+  log:
+    trino:
+      level: DEBUG
+coordinator:
+  jvm:
+    maxHeapSize: "4G"
+  additionalVolumes:
+    - name: es-truststore
+      secret:
+        secretName: trino-es-truststore
+  additionalVolumeMounts:
+    - name: es-truststore
+      mountPath: /etc/trino/es-certs
+      readOnly: true
+worker:
+  jvm:
+    maxHeapSize: "4G"
+  additionalVolumes:
+    - name: es-truststore
+      secret:
+        secretName: trino-es-truststore
+  additionalVolumeMounts:
+    - name: es-truststore
+      mountPath: /etc/trino/es-certs
+      readOnly: true
+  readinessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 10
+    successThreshold: 1
+catalogs:
+  psql: |-
+    connector.name=postgresql
+    connection-url=jdbc:postgresql://postgresql.trino-benchmark.svc.cluster.local:5432/tpcds
+    connection-user=trino
+    connection-password=trinopassword123
+  elastic: |-
+    connector.name=elasticsearch
+    elasticsearch.host=es-es-http.trino-benchmark.svc.cluster.local
+    elasticsearch.port=9200
+    elasticsearch.default-schema-name=default
+    # Security - PASSWORD auth with TLS
+    elasticsearch.security=PASSWORD
+    elasticsearch.auth.user=elastic
+    elasticsearch.auth.password=TOkEGPDjZPwauwIFP5KCqULO
+    # TLS configuration - skip verification for self-signed certs
+    elasticsearch.tls.enabled=true
+    elasticsearch.tls.verify-hostnames=false
+    # Performance tuning
+    elasticsearch.scroll-size=1000
+    elasticsearch.scroll-timeout=1m
+    elasticsearch.request-timeout=30s
+    elasticsearch.tls.truststore-path=/etc/trino/es-certs/truststore.jks
+    elasticsearch.tls.truststore-password=changeit
+  mongodb: |
+    connector.name=mongodb
+    mongodb.connection-url=mongodb://{{ mongodb_user }}:{{ mongodb_password }}@mongodb.{{ namespace }}.svc.cluster.local:27017/tpcds?authSource=tpcds
+    mongodb.schema-collection=_schema
+
+
+#    connection-url=jdbc:postgresql://postgresql.{{ namespace }}.svc.cluster.local:5432/{{ postgresql_database }}
+#    connection-user={{ postgresql_user }}
+#    connection-password={{ postgresql_password }}
