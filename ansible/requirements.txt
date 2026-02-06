@@ -1,0 +1,2 @@
+ansible==8.7
+kubernetes>=35.0
