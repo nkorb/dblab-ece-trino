@@ -1,0 +1,8 @@
+Resource Group,global
+Submission Time,2026-02-06 4:47pm
+Completion Time,2026-02-06 5:04pm
+Elapsed Time,17.36m
+Queued Time,775.47us
+Analysis Time,3.17ms
+Planning Time,37.26ms
+Execution Time,17.36m

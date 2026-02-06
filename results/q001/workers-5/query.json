@@ -1,0 +1,1380 @@
+{
+  "queryId": "20260206_202318_00212_t8t2g",
+  "session": {
+    "queryId": "20260206_202318_00212_t8t2g",
+    "querySpan": {},
+    "transactionId": "d1a8f452-0d99-4403-ae65-86b497d392e8",
+    "clientTransactionSupport": true,
+    "user": "nkorb",
+    "originalUser": "nkorb",
+    "setOriginalRoles": [],
+    "groups": [],
+    "originalUserGroups": [],
+    "principal": "nkorb",
+    "enabledRoles": [],
+    "source": "trino-cli",
+    "path": {
+      "path": [
+        {
+          "catalogName": "system",
+          "schemaName": "$query"
+        },
+        {
+          "catalogName": "system",
+          "schemaName": "builtin"
+        }
+      ],
+      "rawPath": ""
+    },
+    "timeZoneKey": 2051,
+    "locale": "en_US",
+    "remoteUserAddress": "127.0.0.1",
+    "userAgent": "trino-cli/479 os=Mac_OS_X os/version=26.2 arch=aarch64 lang/java=25.0.1 java/vm=OpenJDK_64-Bit_Server_VM java/vendor=Homebrew locale=en-US",
+    "clientTags": [],
+    "clientCapabilities": [
+      "PATH",
+      "PARAMETRIC_DATETIME",
+      "SESSION_AUTHORIZATION"
+    ],
+    "resourceEstimates": {},
+    "start": "2026-02-06T20:23:18.269297019Z",
+    "systemProperties": {},
+    "catalogProperties": {},
+    "catalogRoles": {},
+    "preparedStatements": {},
+    "protocolName": "Trino",
+    "timeZone": "Europe/Athens"
+  },
+  "state": "FINISHED",
+  "self": "http://10.42.1.77:8080/v1/query/20260206_202318_00212_t8t2g",
+  "fieldNames": [
+    "sales"
+  ],
+  "query": "SELECT sum(ss_ext_sales_price) AS sales\nFROM psql.tpcds.store_sales\nWHERE ss_sold_date_sk BETWEEN 2451545 AND 2488070",
+  "queryStats": {
+    "createTime": "2026-02-06T20:23:18.270360763Z",
+    "executionStartTime": "2026-02-06T20:23:18.315360763Z",
+    "lastHeartbeat": "2026-02-06T20:26:33.091360763Z",
+    "endTime": "2026-02-06T20:26:33.113360763Z",
+    "elapsedTime": "3.25m",
+    "queuedTime": "1.22ms",
+    "resourceWaitingTime": "44.22ms",
+    "dispatchingTime": "235.85us",
+    "executionTime": "3.25m",
+    "analysisTime": "44.61ms",
+    "planningTime": "36.15ms",
+    "planningCpuTime": "30.08ms",
+    "startingTime": "2.79ms",
+    "finishingTime": "15.98ms",
+    "totalTasks": 1,
+    "runningTasks": 0,
+    "completedTasks": 1,
+    "failedTasks": 0,
+    "totalDrivers": 1,
+    "queuedDrivers": 0,
+    "runningDrivers": 0,
+    "blockedDrivers": 0,
+    "completedDrivers": 1,
+    "cumulativeUserMemory": 40487361.79846406,
+    "failedCumulativeUserMemory": 0.0,
+    "userMemoryReservation": "0B",
+    "revocableMemoryReservation": "0B",
+    "totalMemoryReservation": "0B",
+    "peakUserMemoryReservation": "208B",
+    "peakRevocableMemoryReservation": "0B",
+    "peakTotalMemoryReservation": "208B",
+    "peakTaskUserMemory": "208B",
+    "peakTaskRevocableMemory": "0B",
+    "peakTaskTotalMemory": "208B",
+    "spilledDataSize": "0B",
+    "scheduled": true,
+    "progressPercentage": 100.0,
+    "runningPercentage": 0.0,
+    "totalScheduledTime": "37.00ms",
+    "failedScheduledTime": "0.00ns",
+    "totalCpuTime": "24.00ms",
+    "failedCpuTime": "0.00ns",
+    "totalBlockedTime": "3.24m",
+    "fullyBlocked": true,
+    "blockedReasons": [],
+    "physicalInputDataSize": "0B",
+    "failedPhysicalInputDataSize": "0B",
+    "physicalInputPositions": 1,
+    "failedPhysicalInputPositions": 0,
+    "physicalInputReadTime": "3.24m",
+    "failedPhysicalInputReadTime": "0.00ns",
+    "internalNetworkInputDataSize": "0B",
+    "failedInternalNetworkInputDataSize": "0B",
+    "internalNetworkInputPositions": 0,
+    "failedInternalNetworkInputPositions": 0,
+    "processedInputDataSize": "17B",
+    "failedProcessedInputDataSize": "0B",
+    "processedInputPositions": 1,
+    "failedProcessedInputPositions": 0,
+    "inputBlockedTime": "3.24m",
+    "failedInputBlockedTime": "0.00ns",
+    "outputDataSize": "17B",
+    "failedOutputDataSize": "0B",
+    "outputPositions": 1,
+    "failedOutputPositions": 0,
+    "outputBlockedTime": "0.00ns",
+    "failedOutputBlockedTime": "0.00ns",
+    "physicalWrittenDataSize": "0B",
+    "failedPhysicalWrittenDataSize": "0B",
+    "stageGcStatistics": [
+      {
+        "stageId": 0,
+        "tasks": 1,
+        "fullGcTasks": 0,
+        "minFullGcSec": 0,
+        "maxFullGcSec": 0,
+        "totalFullGcSec": 0,
+        "averageFullGcSec": 0
+      }
+    ],
+    "dynamicFiltersStats": {
+      "dynamicFilterDomainStats": [],
+      "lazyDynamicFilters": 0,
+      "replicatedDynamicFilters": 0,
+      "totalDynamicFilters": 0,
+      "dynamicFiltersCompleted": 0
+    },
+    "operatorSummaries": [
+      {
+        "stageId": 0,
+        "pipelineId": 0,
+        "operatorId": 0,
+        "planNodeId": "135",
+        "sourceId": "135",
+        "operatorType": "TableScanOperator",
+        "totalDrivers": 1,
+        "addInputCalls": 0,
+        "addInputWall": "0.00ns",
+        "addInputCpu": "0.00ns",
+        "physicalInputDataSize": "0B",
+        "physicalInputPositions": 1,
+        "physicalInputReadTime": "3.24m",
+        "internalNetworkInputDataSize": "0B",
+        "internalNetworkInputPositions": 0,
+        "inputDataSize": "17B",
+        "inputPositions": 1,
+        "sumSquaredInputPositions": 1.0,
+        "getOutputCalls": 2,
+        "getOutputWall": "36.08ms",
+        "getOutputCpu": "22.72ms",
+        "outputDataSize": "17B",
+        "outputPositions": 1,
+        "dynamicFilterSplitsProcessed": 0,
+        "metrics": {
+          "Blocked time distribution (s)": {
+            "@class": "io.trino.execution.DistributionSnapshot",
+            "total": 1,
+            "min": 194.68758087299997,
+            "max": 194.68758087299997,
+            "p01": 194.68758087299997,
+            "p05": 194.68758087299997,
+            "p10": 194.68758087299997,
+            "p25": 194.68758087299997,
+            "p50": 194.68758087299997,
+            "p75": 194.68758087299997,
+            "p90": 194.68758087299997,
+            "p95": 194.68758087299997,
+            "p99": 194.68758087299997
+          },
+          "Scheduled time distribution (s)": {
+            "@class": "io.trino.execution.DistributionSnapshot",
+            "total": 1,
+            "min": 0.036083526,
+            "max": 0.036083526,
+            "p01": 0.036083526,
+            "p05": 0.036083526,
+            "p10": 0.036083526,
+            "p25": 0.036083526,
+            "p50": 0.036083526,
+            "p75": 0.036083526,
+            "p90": 0.036083526,
+            "p95": 0.036083526,
+            "p99": 0.036083526
+          },
+          "Input rows distribution": {
+            "@class": "io.trino.execution.DistributionSnapshot",
+            "total": 1,
+            "min": 1.0,
+            "max": 1.0,
+            "p01": 1.0,
+            "p05": 1.0,
+            "p10": 1.0,
+            "p25": 1.0,
+            "p50": 1.0,
+            "p75": 1.0,
+            "p90": 1.0,
+            "p95": 1.0,
+            "p99": 1.0
+          },
+          "CPU time distribution (s)": {
+            "@class": "io.trino.execution.DistributionSnapshot",
+            "total": 1,
+            "min": 0.022715711999999996,
+            "max": 0.022715711999999996,
+            "p01": 0.022715711999999996,
+            "p05": 0.022715711999999996,
+            "p10": 0.022715711999999996,
+            "p25": 0.022715711999999996,
+            "p50": 0.022715711999999996,
+            "p75": 0.022715711999999996,
+            "p90": 0.022715711999999996,
+            "p95": 0.022715711999999996,
+            "p99": 0.022715711999999996
+          }
+        },
+        "connectorMetrics": {},
+        "pipelineMetrics": {},
+        "physicalWrittenDataSize": "0B",
+        "blockedWall": "3.24m",
+        "finishCalls": 0,
+        "finishWall": "0.00ns",
+        "finishCpu": "0.00ns",
+        "userMemoryReservation": "0B",
+        "revocableMemoryReservation": "0B",
+        "peakUserMemoryReservation": "128B",
+        "peakRevocableMemoryReservation": "0B",
+        "peakTotalMemoryReservation": "128B",
+        "spilledDataSize": "0B"
+      },
+      {
+        "stageId": 0,
+        "pipelineId": 0,
+        "operatorId": 1,
+        "planNodeId": "10",
+        "operatorType": "TaskOutputOperator",
+        "totalDrivers": 1,
+        "addInputCalls": 1,
+        "addInputWall": "196.84us",
+        "addInputCpu": "197.14us",
+        "physicalInputDataSize": "0B",
+        "physicalInputPositions": 0,
+        "physicalInputReadTime": "0.00ns",
+        "internalNetworkInputDataSize": "0B",
+        "internalNetworkInputPositions": 0,
+        "inputDataSize": "17B",
+        "inputPositions": 1,
+        "sumSquaredInputPositions": 1.0,
+        "getOutputCalls": 0,
+        "getOutputWall": "0.00ns",
+        "getOutputCpu": "0.00ns",
+        "outputDataSize": "17B",
+        "outputPositions": 1,
+        "dynamicFilterSplitsProcessed": 0,
+        "metrics": {
+          "Input rows distribution": {
+            "@class": "io.trino.execution.DistributionSnapshot",
+            "total": 1,
+            "min": 1.0,
+            "max": 1.0,
+            "p01": 1.0,
+            "p05": 1.0,
+            "p10": 1.0,
+            "p25": 1.0,
+            "p50": 1.0,
+            "p75": 1.0,
+            "p90": 1.0,
+            "p95": 1.0,
+            "p99": 1.0
+          },
+          "Blocked time distribution (s)": {
+            "@class": "io.trino.execution.DistributionSnapshot",
+            "total": 1,
+            "min": 0.0,
+            "max": 0.0,
+            "p01": 0.0,
+            "p05": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p50": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "exchangeSerializerInputBytes": {
+            "@class": "io.trino.plugin.base.metrics.LongCount",
+            "total": 41
+          },
+          "CPU time distribution (s)": {
+            "@class": "io.trino.execution.DistributionSnapshot",
+            "total": 1,
+            "min": 0.00020324499999999998,
+            "max": 0.00020324499999999998,
+            "p01": 0.00020324499999999998,
+            "p05": 0.00020324499999999998,
+            "p10": 0.00020324499999999998,
+            "p25": 0.00020324499999999998,
+            "p50": 0.00020324499999999998,
+            "p75": 0.00020324499999999998,
+            "p90": 0.00020324499999999998,
+            "p95": 0.00020324499999999998,
+            "p99": 0.00020324499999999998
+          },
+          "exchangeSerializerOutputBytes": {
+            "@class": "io.trino.plugin.base.metrics.LongCount",
+            "total": 41
+          },
+          "Scheduled time distribution (s)": {
+            "@class": "io.trino.execution.DistributionSnapshot",
+            "total": 1,
+            "min": 0.00020213299999999998,
+            "max": 0.00020213299999999998,
+            "p01": 0.00020213299999999998,
+            "p05": 0.00020213299999999998,
+            "p10": 0.00020213299999999998,
+            "p25": 0.00020213299999999998,
+            "p50": 0.00020213299999999998,
+            "p75": 0.00020213299999999998,
+            "p90": 0.00020213299999999998,
+            "p95": 0.00020213299999999998,
+            "p99": 0.00020213299999999998
+          }
+        },
+        "connectorMetrics": {},
+        "pipelineMetrics": {},
+        "physicalWrittenDataSize": "0B",
+        "blockedWall": "0.00ns",
+        "finishCalls": 1,
+        "finishWall": "5.29us",
+        "finishCpu": "6.11us",
+        "userMemoryReservation": "0B",
+        "revocableMemoryReservation": "0B",
+        "peakUserMemoryReservation": "80B",
+        "peakRevocableMemoryReservation": "0B",
+        "peakTotalMemoryReservation": "80B",
+        "spilledDataSize": "0B"
+      }
+    ],
+    "optimizerRulesSummaries": [
+      {
+        "rule": "io.trino.sql.planner.iterative.rule.PushPredicateIntoTableScan",
+        "invocations": 1,
+        "applied": 1,
+        "totalTime": 12421311,
+        "failures": 0
+      },
+      {
+        "rule": "io.trino.sql.planner.iterative.rule.PushAggregationIntoTableScan",
+        "invocations": 2,
+        "applied": 1,
+        "totalTime": 1480459,
+        "failures": 0
+      },
+      {
+        "rule": "io.trino.sql.planner.iterative.rule.PruneTableScanColumns",
+        "invocations": 20,
+        "applied": 3,
+        "totalTime": 1087832,
+        "failures": 0
+      },
+      {
+        "rule": "io.trino.sql.planner.iterative.rule.ExpressionRewriteRuleSet.FilterExpressionRewrite",
+        "invocations": 58,
+        "applied": 1,
+        "totalTime": 801882,
+        "failures": 0
+      },
+      {
+        "rule": "io.trino.sql.planner.iterative.rule.ExpressionRewriteRuleSet.ProjectExpressionRewrite",
+        "invocations": 142,
+        "applied": 0,
+        "totalTime": 538635,
+        "failures": 0
+      },
+      {
+        "rule": "io.trino.sql.planner.iterative.rule.PruneProjectColumns",
+        "invocations": 17,
+        "applied": 3,
+        "totalTime": 531479,
+        "failures": 0
+      },
+      {
+        "rule": "io.trino.sql.planner.iterative.rule.InlineProjections",
+        "invocations": 13,
+        "applied": 5,
+        "totalTime": 517703,
+        "failures": 0
+      },
+      {
+        "rule": "io.trino.sql.planner.iterative.rule.RemoveRedundantIdentityProjections",
+        "invocations": 17,
+        "applied": 5,
+        "totalTime": 504764,
+        "failures": 0
+      },
+      {
+        "rule": "io.trino.sql.planner.iterative.rule.PruneFilterColumns",
+        "invocations": 17,
+        "applied": 1,
+        "totalTime": 360764,
+        "failures": 0
+      },
+      {
+        "rule": "io.trino.sql.planner.iterative.rule.PruneAggregationSourceColumns",
+        "invocations": 9,
+        "applied": 1,
+        "totalTime": 344540,
+        "failures": 0
+      }
+    ],
+    "logicalWrittenDataSize": "0B",
+    "writtenPositions": 0
+  },
+  "resetAuthorizationUser": false,
+  "setOriginalRoles": [],
+  "setSessionProperties": {},
+  "resetSessionProperties": [],
+  "setRoles": {},
+  "addedPreparedStatements": {},
+  "deallocatedPreparedStatements": [],
+  "clearTransactionId": false,
+  "stages": {
+    "outputStageId": "20260206_202318_00212_t8t2g.0",
+    "stages": [
+      {
+        "stageId": "20260206_202318_00212_t8t2g.0",
+        "state": "FINISHED",
+        "plan": {
+          "id": "0",
+          "root": {
+            "@type": "output",
+            "id": "10",
+            "source": {
+              "@type": "tableScan",
+              "id": "135",
+              "table": {
+                "catalogHandle": "psql:normal:default",
+                "connectorHandle": {
+                  "@type": "postgresql:io.trino.plugin.jdbc.JdbcTableHandle",
+                  "relationHandle": {
+                    "@type": "query",
+                    "preparedQuery": {
+                      "query": "SELECT sum(\"ss_ext_sales_price\") AS \"_pfgnrtd_0\" FROM \"tpcds\".\"tpcds\".\"store_sales\" WHERE (\"ss_sold_date_sk\" >= ? AND \"ss_sold_date_sk\" <= ?)",
+                      "parameters": [
+                        {
+                          "jdbcType": {
+                            "jdbcType": -5,
+                            "jdbcTypeName": "int8",
+                            "columnSize": 19,
+                            "decimalDigits": 0
+                          },
+                          "type": "bigint",
+                          "valueBlock": "CgAAAExPTkdfQVJSQVkBAAAAAFloJQAAAAAA"
+                        },
+                        {
+                          "jdbcType": {
+                            "jdbcType": -5,
+                            "jdbcTypeName": "int8",
+                            "columnSize": 19,
+                            "decimalDigits": 0
+                          },
+                          "type": "bigint",
+                          "valueBlock": "CgAAAExPTkdfQVJSQVkBAAAAAAb3JQAAAAAA"
+                        }
+                      ]
+                    }
+                  },
+                  "constraint": {
+                    "columnDomains": []
+                  },
+                  "constraintExpressions": [],
+                  "columns": [
+                    {
+                      "@type": "postgresql:io.trino.plugin.jdbc.JdbcColumnHandle",
+                      "columnName": "_pfgnrtd_0",
+                      "jdbcTypeHandle": {
+                        "jdbcType": 2,
+                        "jdbcTypeName": "decimal",
+                        "columnSize": 38,
+                        "decimalDigits": 2
+                      },
+                      "columnType": "decimal(38,2)",
+                      "nullable": true,
+                      "comment": "synthetic"
+                    }
+                  ],
+                  "otherReferencedTables": [
+                    {
+                      "schema": "tpcds",
+                      "table": "store_sales"
+                    }
+                  ],
+                  "nextSyntheticColumnId": 1,
+                  "updateAssignments": []
+                },
+                "transaction": {
+                  "@type": "postgresql:io.trino.plugin.jdbc.JdbcTransactionHandle",
+                  "uuid": "e2f7a8bc-2add-42f3-a65f-b527a8641f8e"
+                }
+              },
+              "outputSymbols": [
+                {
+                  "type": "decimal(38,2)",
+                  "name": "pfgnrtd"
+                }
+              ],
+              "assignments": {
+                "13|decimal(38,2)|pfgnrtd": {
+                  "@type": "postgresql:io.trino.plugin.jdbc.JdbcColumnHandle",
+                  "columnName": "_pfgnrtd_0",
+                  "jdbcTypeHandle": {
+                    "jdbcType": 2,
+                    "jdbcTypeName": "decimal",
+                    "columnSize": 38,
+                    "decimalDigits": 2
+                  },
+                  "columnType": "decimal(38,2)",
+                  "nullable": true,
+                  "comment": "synthetic"
+                }
+              },
+              "updateTarget": false,
+              "useConnectorNodePartitioning": false
+            },
+            "columns": [
+              "sales"
+            ],
+            "outputs": [
+              {
+                "type": "decimal(38,2)",
+                "name": "pfgnrtd"
+              }
+            ]
+          },
+          "symbols": [
+            {
+              "type": "decimal(38,2)",
+              "name": "pfgnrtd"
+            }
+          ],
+          "partitioning": {
+            "connectorHandle": {
+              "@type": "system:io.trino.sql.planner.SystemPartitioningHandle",
+              "partitioning": "SOURCE",
+              "function": "UNKNOWN"
+            },
+            "scaleWriters": false
+          },
+          "partitionedSources": [
+            "135"
+          ],
+          "outputPartitioningScheme": {
+            "partitioning": {
+              "handle": {
+                "connectorHandle": {
+                  "@type": "system:io.trino.sql.planner.SystemPartitioningHandle",
+                  "partitioning": "SINGLE",
+                  "function": "SINGLE"
+                },
+                "scaleWriters": false
+              },
+              "arguments": []
+            },
+            "outputLayout": [
+              {
+                "type": "decimal(38,2)",
+                "name": "pfgnrtd"
+              }
+            ],
+            "replicateNullsAndAny": false
+          },
+          "statsAndCosts": {
+            "stats": {
+              "10": {
+                "outputRowCount": 1.0,
+                "symbolStatistics": {}
+              },
+              "135": {
+                "outputRowCount": 1.0,
+                "symbolStatistics": {}
+              }
+            },
+            "costs": {
+              "10": {
+                "cpuCost": 17.0,
+                "maxMemory": 0.0,
+                "maxMemoryWhenOutputting": 0.0,
+                "networkCost": 0.0,
+                "rootNodeLocalCostEstimate": {
+                  "cpuCost": 0.0,
+                  "maxMemory": 0.0,
+                  "networkCost": 0.0
+                }
+              },
+              "135": {
+                "cpuCost": 17.0,
+                "maxMemory": 0.0,
+                "maxMemoryWhenOutputting": 0.0,
+                "networkCost": 0.0,
+                "rootNodeLocalCostEstimate": {
+                  "cpuCost": 17.0,
+                  "maxMemory": 0.0,
+                  "networkCost": 0.0
+                }
+              }
+            }
+          },
+          "activeCatalogs": [],
+          "languageFunctions": {},
+          "jsonRepresentation": "{\n  \"id\" : \"10\",\n  \"name\" : \"Output\",\n  \"descriptor\" : {\n    \"columnNames\" : \"[sales]\"\n  },\n  \"outputs\" : [ {\n    \"type\" : \"decimal(38,2)\",\n    \"name\" : \"pfgnrtd\"\n  } ],\n  \"details\" : [ \"sales := pfgnrtd\" ],\n  \"estimates\" : [ ],\n  \"children\" : [ {\n    \"id\" : \"135\",\n    \"name\" : \"TableScan\",\n    \"descriptor\" : {\n      \"table\" : \"psql:Query[SELECT sum(\\\"ss_ext_sales_price\\\") AS \\\"_pfgnrtd_0\\\" FROM \\\"tpcds\\\".\\\"tpcds\\\".\\\"store_sales\\\" WHERE (\\\"ss_sold_date_sk\\\" >= ? AND \\\"ss_sold_date_sk\\\" <= ?)] columns=[_pfgnrtd_0:decimal(38,2):decimal]\"\n    },\n    \"outputs\" : [ {\n      \"type\" : \"decimal(38,2)\",\n      \"name\" : \"pfgnrtd\"\n    } ],\n    \"details\" : [ \"pfgnrtd := _pfgnrtd_0:decimal(38,2):decimal\" ],\n    \"estimates\" : [ ],\n    \"children\" : [ ]\n  } ]\n}"
+        },
+        "coordinatorOnly": false,
+        "types": [
+          "decimal(38,2)"
+        ],
+        "stageStats": {
+          "schedulingComplete": "2026-02-06T20:23:18.354472801Z",
+          "getSplitDistribution": {
+            "135": {
+              "count": 1.0,
+              "total": 13066.0,
+              "p01": 13066.0,
+              "p05": 13066.0,
+              "p10": 13066.0,
+              "p25": 13066.0,
+              "p50": 13066.0,
+              "p75": 13066.0,
+              "p90": 13066.0,
+              "p95": 13066.0,
+              "p99": 13066.0,
+              "min": 13066.0,
+              "max": 13066.0,
+              "avg": 13066.0
+            }
+          },
+          "splitSourceMetrics": {
+            "135": {}
+          },
+          "totalTasks": 1,
+          "runningTasks": 0,
+          "completedTasks": 1,
+          "failedTasks": 0,
+          "totalDrivers": 1,
+          "queuedDrivers": 0,
+          "runningDrivers": 0,
+          "blockedDrivers": 0,
+          "completedDrivers": 1,
+          "cumulativeUserMemory": 40487361.79846406,
+          "failedCumulativeUserMemory": 0.0,
+          "userMemoryReservation": "0B",
+          "revocableMemoryReservation": "0B",
+          "totalMemoryReservation": "0B",
+          "peakUserMemoryReservation": "208B",
+          "peakRevocableMemoryReservation": "0B",
+          "spilledDataSize": "0B",
+          "totalScheduledTime": "37.10ms",
+          "failedScheduledTime": "0.00s",
+          "totalCpuTime": "23.74ms",
+          "failedCpuTime": "0.00s",
+          "totalBlockedTime": "3.24m",
+          "fullyBlocked": false,
+          "blockedReasons": [],
+          "physicalInputDataSize": "0B",
+          "failedPhysicalInputDataSize": "0B",
+          "physicalInputPositions": 1,
+          "failedPhysicalInputPositions": 0,
+          "physicalInputReadTime": "3.24m",
+          "failedPhysicalInputReadTime": "0.00s",
+          "internalNetworkInputDataSize": "0B",
+          "failedInternalNetworkInputDataSize": "0B",
+          "internalNetworkInputPositions": 0,
+          "failedInternalNetworkInputPositions": 0,
+          "processedInputDataSize": "17B",
+          "failedProcessedInputDataSize": "0B",
+          "processedInputPositions": 1,
+          "failedProcessedInputPositions": 0,
+          "inputBlockedTime": "3.24m",
+          "failedInputBlockedTime": "0.00s",
+          "bufferedDataSize": "0B",
+          "outputBufferUtilization": {
+            "total": 9490558,
+            "min": 0.0,
+            "max": 0.000003635883331298828,
+            "p01": 0.0,
+            "p05": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p50": 4.975759569208322E-7,
+            "p75": 0.0000031774487234327954,
+            "p90": 0.000003635883331298828,
+            "p95": 0.000003635883331298828,
+            "p99": 0.000003635883331298828
+          },
+          "outputDataSize": "17B",
+          "failedOutputDataSize": "0B",
+          "outputPositions": 1,
+          "failedOutputPositions": 0,
+          "outputBufferMetrics": {},
+          "outputBlockedTime": "0.00s",
+          "failedOutputBlockedTime": "0.00s",
+          "physicalWrittenDataSize": "0B",
+          "failedPhysicalWrittenDataSize": "0B",
+          "gcInfo": {
+            "stageId": 0,
+            "tasks": 1,
+            "fullGcTasks": 0,
+            "minFullGcSec": 0,
+            "maxFullGcSec": 0,
+            "totalFullGcSec": 0,
+            "averageFullGcSec": 0
+          },
+          "operatorSummaries": [
+            {
+              "stageId": 0,
+              "pipelineId": 0,
+              "operatorId": 0,
+              "planNodeId": "135",
+              "sourceId": "135",
+              "operatorType": "TableScanOperator",
+              "totalDrivers": 1,
+              "addInputCalls": 0,
+              "addInputWall": "0.00ns",
+              "addInputCpu": "0.00ns",
+              "physicalInputDataSize": "0B",
+              "physicalInputPositions": 1,
+              "physicalInputReadTime": "3.24m",
+              "internalNetworkInputDataSize": "0B",
+              "internalNetworkInputPositions": 0,
+              "inputDataSize": "17B",
+              "inputPositions": 1,
+              "sumSquaredInputPositions": 1.0,
+              "getOutputCalls": 2,
+              "getOutputWall": "36.08ms",
+              "getOutputCpu": "22.72ms",
+              "outputDataSize": "17B",
+              "outputPositions": 1,
+              "dynamicFilterSplitsProcessed": 0,
+              "metrics": {
+                "Blocked time distribution (s)": {
+                  "@class": "io.trino.execution.DistributionSnapshot",
+                  "total": 1,
+                  "min": 194.68758087299997,
+                  "max": 194.68758087299997,
+                  "p01": 194.68758087299997,
+                  "p05": 194.68758087299997,
+                  "p10": 194.68758087299997,
+                  "p25": 194.68758087299997,
+                  "p50": 194.68758087299997,
+                  "p75": 194.68758087299997,
+                  "p90": 194.68758087299997,
+                  "p95": 194.68758087299997,
+                  "p99": 194.68758087299997
+                },
+                "Scheduled time distribution (s)": {
+                  "@class": "io.trino.execution.DistributionSnapshot",
+                  "total": 1,
+                  "min": 0.036083526,
+                  "max": 0.036083526,
+                  "p01": 0.036083526,
+                  "p05": 0.036083526,
+                  "p10": 0.036083526,
+                  "p25": 0.036083526,
+                  "p50": 0.036083526,
+                  "p75": 0.036083526,
+                  "p90": 0.036083526,
+                  "p95": 0.036083526,
+                  "p99": 0.036083526
+                },
+                "Input rows distribution": {
+                  "@class": "io.trino.execution.DistributionSnapshot",
+                  "total": 1,
+                  "min": 1.0,
+                  "max": 1.0,
+                  "p01": 1.0,
+                  "p05": 1.0,
+                  "p10": 1.0,
+                  "p25": 1.0,
+                  "p50": 1.0,
+                  "p75": 1.0,
+                  "p90": 1.0,
+                  "p95": 1.0,
+                  "p99": 1.0
+                },
+                "CPU time distribution (s)": {
+                  "@class": "io.trino.execution.DistributionSnapshot",
+                  "total": 1,
+                  "min": 0.022715711999999996,
+                  "max": 0.022715711999999996,
+                  "p01": 0.022715711999999996,
+                  "p05": 0.022715711999999996,
+                  "p10": 0.022715711999999996,
+                  "p25": 0.022715711999999996,
+                  "p50": 0.022715711999999996,
+                  "p75": 0.022715711999999996,
+                  "p90": 0.022715711999999996,
+                  "p95": 0.022715711999999996,
+                  "p99": 0.022715711999999996
+                }
+              },
+              "connectorMetrics": {},
+              "pipelineMetrics": {},
+              "physicalWrittenDataSize": "0B",
+              "blockedWall": "3.24m",
+              "finishCalls": 0,
+              "finishWall": "0.00ns",
+              "finishCpu": "0.00ns",
+              "userMemoryReservation": "0B",
+              "revocableMemoryReservation": "0B",
+              "peakUserMemoryReservation": "128B",
+              "peakRevocableMemoryReservation": "0B",
+              "peakTotalMemoryReservation": "128B",
+              "spilledDataSize": "0B"
+            },
+            {
+              "stageId": 0,
+              "pipelineId": 0,
+              "operatorId": 1,
+              "planNodeId": "10",
+              "operatorType": "TaskOutputOperator",
+              "totalDrivers": 1,
+              "addInputCalls": 1,
+              "addInputWall": "196.84us",
+              "addInputCpu": "197.14us",
+              "physicalInputDataSize": "0B",
+              "physicalInputPositions": 0,
+              "physicalInputReadTime": "0.00ns",
+              "internalNetworkInputDataSize": "0B",
+              "internalNetworkInputPositions": 0,
+              "inputDataSize": "17B",
+              "inputPositions": 1,
+              "sumSquaredInputPositions": 1.0,
+              "getOutputCalls": 0,
+              "getOutputWall": "0.00ns",
+              "getOutputCpu": "0.00ns",
+              "outputDataSize": "17B",
+              "outputPositions": 1,
+              "dynamicFilterSplitsProcessed": 0,
+              "metrics": {
+                "Scheduled time distribution (s)": {
+                  "@class": "io.trino.execution.DistributionSnapshot",
+                  "total": 1,
+                  "min": 0.00020213299999999998,
+                  "max": 0.00020213299999999998,
+                  "p01": 0.00020213299999999998,
+                  "p05": 0.00020213299999999998,
+                  "p10": 0.00020213299999999998,
+                  "p25": 0.00020213299999999998,
+                  "p50": 0.00020213299999999998,
+                  "p75": 0.00020213299999999998,
+                  "p90": 0.00020213299999999998,
+                  "p95": 0.00020213299999999998,
+                  "p99": 0.00020213299999999998
+                },
+                "Blocked time distribution (s)": {
+                  "@class": "io.trino.execution.DistributionSnapshot",
+                  "total": 1,
+                  "min": 0.0,
+                  "max": 0.0,
+                  "p01": 0.0,
+                  "p05": 0.0,
+                  "p10": 0.0,
+                  "p25": 0.0,
+                  "p50": 0.0,
+                  "p75": 0.0,
+                  "p90": 0.0,
+                  "p95": 0.0,
+                  "p99": 0.0
+                },
+                "exchangeSerializerInputBytes": {
+                  "@class": "io.trino.plugin.base.metrics.LongCount",
+                  "total": 41
+                },
+                "CPU time distribution (s)": {
+                  "@class": "io.trino.execution.DistributionSnapshot",
+                  "total": 1,
+                  "min": 0.00020324499999999998,
+                  "max": 0.00020324499999999998,
+                  "p01": 0.00020324499999999998,
+                  "p05": 0.00020324499999999998,
+                  "p10": 0.00020324499999999998,
+                  "p25": 0.00020324499999999998,
+                  "p50": 0.00020324499999999998,
+                  "p75": 0.00020324499999999998,
+                  "p90": 0.00020324499999999998,
+                  "p95": 0.00020324499999999998,
+                  "p99": 0.00020324499999999998
+                },
+                "Input rows distribution": {
+                  "@class": "io.trino.execution.DistributionSnapshot",
+                  "total": 1,
+                  "min": 1.0,
+                  "max": 1.0,
+                  "p01": 1.0,
+                  "p05": 1.0,
+                  "p10": 1.0,
+                  "p25": 1.0,
+                  "p50": 1.0,
+                  "p75": 1.0,
+                  "p90": 1.0,
+                  "p95": 1.0,
+                  "p99": 1.0
+                },
+                "exchangeSerializerOutputBytes": {
+                  "@class": "io.trino.plugin.base.metrics.LongCount",
+                  "total": 41
+                }
+              },
+              "connectorMetrics": {},
+              "pipelineMetrics": {},
+              "physicalWrittenDataSize": "0B",
+              "blockedWall": "0.00ns",
+              "finishCalls": 1,
+              "finishWall": "5.29us",
+              "finishCpu": "6.11us",
+              "userMemoryReservation": "0B",
+              "revocableMemoryReservation": "0B",
+              "peakUserMemoryReservation": "80B",
+              "peakRevocableMemoryReservation": "0B",
+              "peakTotalMemoryReservation": "80B",
+              "spilledDataSize": "0B"
+            }
+          ]
+        },
+        "tasks": [
+          {
+            "taskStatus": {
+              "taskId": "20260206_202318_00212_t8t2g.0.0.0",
+              "taskInstanceId": "685925fe-6ed4-4d9c-8e15-9297daab7f02",
+              "version": 2,
+              "state": "FINISHED",
+              "self": "http://10.42.2.60:8080/v1/task/20260206_202318_00212_t8t2g.0.0.0",
+              "nodeId": "trino-worker-6579f6649b-stfbc",
+              "speculative": false,
+              "failures": [],
+              "queuedPartitionedDrivers": 0,
+              "runningPartitionedDrivers": 0,
+              "outputBufferStatus": {
+                "outputBuffersVersion": 2,
+                "overutilized": false,
+                "exchangeSinkInstanceHandleUpdateRequired": false
+              },
+              "outputDataSize": "17B",
+              "writerInputDataSize": "0B",
+              "physicalWrittenDataSize": "0B",
+              "memoryReservation": "0B",
+              "peakMemoryReservation": "208B",
+              "revocableMemoryReservation": "0B",
+              "fullGcCount": 0,
+              "fullGcTime": "0.00ns",
+              "dynamicFiltersVersion": 0,
+              "queuedPartitionedSplitsWeight": 0,
+              "runningPartitionedSplitsWeight": 0
+            },
+            "lastHeartbeat": "2026-02-06T20:26:33.093226870Z",
+            "outputBuffers": {
+              "type": "PARTITIONED",
+              "state": "FINISHED",
+              "canAddBuffers": false,
+              "canAddPages": false,
+              "totalBufferedBytes": 0,
+              "totalBufferedPages": 0,
+              "totalRowsSent": 1,
+              "totalPagesSent": 1
+            },
+            "noMoreSplits": [
+              "135"
+            ],
+            "stats": {
+              "createTime": "2026-02-06T20:23:18.355960401Z",
+              "firstStartTime": "2026-02-06T20:23:18.363118432Z",
+              "lastStartTime": "2026-02-06T20:23:18.363118432Z",
+              "lastEndTime": "2026-02-06T20:26:33.089Z",
+              "endTime": "2026-02-06T20:26:33.095184205Z",
+              "elapsedTime": "3.25m",
+              "queuedTime": "2.27ms",
+              "totalDrivers": 1,
+              "queuedDrivers": 0,
+              "queuedPartitionedDrivers": 0,
+              "queuedPartitionedSplitsWeight": 0,
+              "runningDrivers": 0,
+              "runningPartitionedDrivers": 0,
+              "runningPartitionedSplitsWeight": 0,
+              "blockedDrivers": 0,
+              "completedDrivers": 1,
+              "cumulativeUserMemory": 40487361.79846406,
+              "userMemoryReservation": "0B",
+              "peakUserMemoryReservation": "208B",
+              "revocableMemoryReservation": "0B",
+              "spilledDataSize": "0B",
+              "totalScheduledTime": "37.10ms",
+              "totalCpuTime": "23.74ms",
+              "totalBlockedTime": "3.24m",
+              "fullyBlocked": false,
+              "blockedReasons": [],
+              "physicalInputDataSize": "0B",
+              "physicalInputPositions": 1,
+              "physicalInputReadTime": "3.24m",
+              "internalNetworkInputDataSize": "0B",
+              "internalNetworkInputPositions": 0,
+              "processedInputDataSize": "17B",
+              "processedInputPositions": 1,
+              "inputBlockedTime": "3.24m",
+              "outputDataSize": "17B",
+              "outputPositions": 1,
+              "outputBlockedTime": "0.00ns",
+              "writerInputDataSize": "0B",
+              "physicalWrittenDataSize": "0B",
+              "fullGcCount": 0,
+              "fullGcTime": "0.00ns",
+              "pipelines": [
+                {
+                  "pipelineId": 0,
+                  "firstStartTime": "2026-02-06T20:23:18.363118218Z",
+                  "lastStartTime": "2026-02-06T20:23:18.363118218Z",
+                  "lastEndTime": "2026-02-06T20:26:33.089047993Z",
+                  "inputPipeline": true,
+                  "outputPipeline": true,
+                  "totalDrivers": 1,
+                  "queuedDrivers": 0,
+                  "queuedPartitionedDrivers": 0,
+                  "queuedPartitionedSplitsWeight": 0,
+                  "runningDrivers": 0,
+                  "runningPartitionedDrivers": 0,
+                  "runningPartitionedSplitsWeight": 0,
+                  "blockedDrivers": 0,
+                  "completedDrivers": 1,
+                  "userMemoryReservation": "0B",
+                  "revocableMemoryReservation": "0B",
+                  "spilledDataSize": "0B",
+                  "queuedTime": {
+                    "count": 1.0,
+                    "total": 1276733.0,
+                    "p01": 1276733.0,
+                    "p05": 1276733.0,
+                    "p10": 1276733.0,
+                    "p25": 1276733.0,
+                    "p50": 1276733.0,
+                    "p75": 1276733.0,
+                    "p90": 1276733.0,
+                    "p95": 1276733.0,
+                    "p99": 1276733.0,
+                    "min": 1276733.0,
+                    "max": 1276733.0,
+                    "avg": 1276733.0
+                  },
+                  "elapsedTime": {
+                    "count": 1.0,
+                    "total": 194727203646,
+                    "p01": 194727203646,
+                    "p05": 194727203646,
+                    "p10": 194727203646,
+                    "p25": 194727203646,
+                    "p50": 194727203646,
+                    "p75": 194727203646,
+                    "p90": 194727203646,
+                    "p95": 194727203646,
+                    "p99": 194727203646,
+                    "min": 194727203646,
+                    "max": 194727203646,
+                    "avg": 194727203646
+                  },
+                  "totalScheduledTime": "37.10ms",
+                  "totalCpuTime": "23.74ms",
+                  "totalBlockedTime": "3.24m",
+                  "fullyBlocked": false,
+                  "blockedReasons": [],
+                  "physicalInputDataSize": "0B",
+                  "physicalInputPositions": 1,
+                  "physicalInputReadTime": "3.24m",
+                  "internalNetworkInputDataSize": "0B",
+                  "internalNetworkInputPositions": 0,
+                  "processedInputDataSize": "17B",
+                  "processedInputPositions": 1,
+                  "inputBlockedTime": "3.24m",
+                  "outputDataSize": "17B",
+                  "outputPositions": 1,
+                  "outputBlockedTime": "0.00ns",
+                  "physicalWrittenDataSize": "0B",
+                  "operatorSummaries": [
+                    {
+                      "stageId": 0,
+                      "pipelineId": 0,
+                      "operatorId": 0,
+                      "planNodeId": "135",
+                      "sourceId": "135",
+                      "operatorType": "TableScanOperator",
+                      "totalDrivers": 1,
+                      "addInputCalls": 0,
+                      "addInputWall": "0.00ns",
+                      "addInputCpu": "0.00ns",
+                      "physicalInputDataSize": "0B",
+                      "physicalInputPositions": 1,
+                      "physicalInputReadTime": "3.24m",
+                      "internalNetworkInputDataSize": "0B",
+                      "internalNetworkInputPositions": 0,
+                      "inputDataSize": "17B",
+                      "inputPositions": 1,
+                      "sumSquaredInputPositions": 1.0,
+                      "getOutputCalls": 2,
+                      "getOutputWall": "36.08ms",
+                      "getOutputCpu": "22.72ms",
+                      "outputDataSize": "17B",
+                      "outputPositions": 1,
+                      "dynamicFilterSplitsProcessed": 0,
+                      "metrics": {
+                        "Blocked time distribution (s)": {
+                          "@class": "io.trino.execution.DistributionSnapshot",
+                          "total": 1,
+                          "min": 194.68758087299997,
+                          "max": 194.68758087299997,
+                          "p01": 194.68758087299997,
+                          "p05": 194.68758087299997,
+                          "p10": 194.68758087299997,
+                          "p25": 194.68758087299997,
+                          "p50": 194.68758087299997,
+                          "p75": 194.68758087299997,
+                          "p90": 194.68758087299997,
+                          "p95": 194.68758087299997,
+                          "p99": 194.68758087299997
+                        },
+                        "Scheduled time distribution (s)": {
+                          "@class": "io.trino.execution.DistributionSnapshot",
+                          "total": 1,
+                          "min": 0.036083526,
+                          "max": 0.036083526,
+                          "p01": 0.036083526,
+                          "p05": 0.036083526,
+                          "p10": 0.036083526,
+                          "p25": 0.036083526,
+                          "p50": 0.036083526,
+                          "p75": 0.036083526,
+                          "p90": 0.036083526,
+                          "p95": 0.036083526,
+                          "p99": 0.036083526
+                        },
+                        "Input rows distribution": {
+                          "@class": "io.trino.execution.DistributionSnapshot",
+                          "total": 1,
+                          "min": 1.0,
+                          "max": 1.0,
+                          "p01": 1.0,
+                          "p05": 1.0,
+                          "p10": 1.0,
+                          "p25": 1.0,
+                          "p50": 1.0,
+                          "p75": 1.0,
+                          "p90": 1.0,
+                          "p95": 1.0,
+                          "p99": 1.0
+                        },
+                        "CPU time distribution (s)": {
+                          "@class": "io.trino.execution.DistributionSnapshot",
+                          "total": 1,
+                          "min": 0.022715711999999996,
+                          "max": 0.022715711999999996,
+                          "p01": 0.022715711999999996,
+                          "p05": 0.022715711999999996,
+                          "p10": 0.022715711999999996,
+                          "p25": 0.022715711999999996,
+                          "p50": 0.022715711999999996,
+                          "p75": 0.022715711999999996,
+                          "p90": 0.022715711999999996,
+                          "p95": 0.022715711999999996,
+                          "p99": 0.022715711999999996
+                        }
+                      },
+                      "connectorMetrics": {},
+                      "pipelineMetrics": {},
+                      "physicalWrittenDataSize": "0B",
+                      "blockedWall": "3.24m",
+                      "finishCalls": 0,
+                      "finishWall": "0.00ns",
+                      "finishCpu": "0.00ns",
+                      "userMemoryReservation": "0B",
+                      "revocableMemoryReservation": "0B",
+                      "peakUserMemoryReservation": "128B",
+                      "peakRevocableMemoryReservation": "0B",
+                      "peakTotalMemoryReservation": "128B",
+                      "spilledDataSize": "0B"
+                    },
+                    {
+                      "stageId": 0,
+                      "pipelineId": 0,
+                      "operatorId": 1,
+                      "planNodeId": "10",
+                      "operatorType": "TaskOutputOperator",
+                      "totalDrivers": 1,
+                      "addInputCalls": 1,
+                      "addInputWall": "196.84us",
+                      "addInputCpu": "197.14us",
+                      "physicalInputDataSize": "0B",
+                      "physicalInputPositions": 0,
+                      "physicalInputReadTime": "0.00ns",
+                      "internalNetworkInputDataSize": "0B",
+                      "internalNetworkInputPositions": 0,
+                      "inputDataSize": "17B",
+                      "inputPositions": 1,
+                      "sumSquaredInputPositions": 1.0,
+                      "getOutputCalls": 0,
+                      "getOutputWall": "0.00ns",
+                      "getOutputCpu": "0.00ns",
+                      "outputDataSize": "17B",
+                      "outputPositions": 1,
+                      "dynamicFilterSplitsProcessed": 0,
+                      "metrics": {
+                        "Scheduled time distribution (s)": {
+                          "@class": "io.trino.execution.DistributionSnapshot",
+                          "total": 1,
+                          "min": 0.00020213299999999998,
+                          "max": 0.00020213299999999998,
+                          "p01": 0.00020213299999999998,
+                          "p05": 0.00020213299999999998,
+                          "p10": 0.00020213299999999998,
+                          "p25": 0.00020213299999999998,
+                          "p50": 0.00020213299999999998,
+                          "p75": 0.00020213299999999998,
+                          "p90": 0.00020213299999999998,
+                          "p95": 0.00020213299999999998,
+                          "p99": 0.00020213299999999998
+                        },
+                        "Blocked time distribution (s)": {
+                          "@class": "io.trino.execution.DistributionSnapshot",
+                          "total": 1,
+                          "min": 0.0,
+                          "max": 0.0,
+                          "p01": 0.0,
+                          "p05": 0.0,
+                          "p10": 0.0,
+                          "p25": 0.0,
+                          "p50": 0.0,
+                          "p75": 0.0,
+                          "p90": 0.0,
+                          "p95": 0.0,
+                          "p99": 0.0
+                        },
+                        "exchangeSerializerInputBytes": {
+                          "@class": "io.trino.plugin.base.metrics.LongCount",
+                          "total": 41
+                        },
+                        "CPU time distribution (s)": {
+                          "@class": "io.trino.execution.DistributionSnapshot",
+                          "total": 1,
+                          "min": 0.00020324499999999998,
+                          "max": 0.00020324499999999998,
+                          "p01": 0.00020324499999999998,
+                          "p05": 0.00020324499999999998,
+                          "p10": 0.00020324499999999998,
+                          "p25": 0.00020324499999999998,
+                          "p50": 0.00020324499999999998,
+                          "p75": 0.00020324499999999998,
+                          "p90": 0.00020324499999999998,
+                          "p95": 0.00020324499999999998,
+                          "p99": 0.00020324499999999998
+                        },
+                        "exchangeSerializerOutputBytes": {
+                          "@class": "io.trino.plugin.base.metrics.LongCount",
+                          "total": 41
+                        },
+                        "Input rows distribution": {
+                          "@class": "io.trino.execution.DistributionSnapshot",
+                          "total": 1,
+                          "min": 1.0,
+                          "max": 1.0,
+                          "p01": 1.0,
+                          "p05": 1.0,
+                          "p10": 1.0,
+                          "p25": 1.0,
+                          "p50": 1.0,
+                          "p75": 1.0,
+                          "p90": 1.0,
+                          "p95": 1.0,
+                          "p99": 1.0
+                        }
+                      },
+                      "connectorMetrics": {},
+                      "pipelineMetrics": {},
+                      "physicalWrittenDataSize": "0B",
+                      "blockedWall": "0.00ns",
+                      "finishCalls": 1,
+                      "finishWall": "5.29us",
+                      "finishCpu": "6.11us",
+                      "userMemoryReservation": "0B",
+                      "revocableMemoryReservation": "0B",
+                      "peakUserMemoryReservation": "80B",
+                      "peakRevocableMemoryReservation": "0B",
+                      "peakTotalMemoryReservation": "80B",
+                      "spilledDataSize": "0B"
+                    }
+                  ],
+                  "drivers": []
+                }
+              ]
+            },
+            "needsPlan": false
+          }
+        ],
+        "subStages": [],
+        "tables": {
+          "135": {
+            "connectorName": "postgresql",
+            "tableName": "psql._generated._generated_query",
+            "predicate": {
+              "columnDomains": []
+            }
+          }
+        }
+      }
+    ]
+  },
+  "warnings": [],
+  "inputs": [
+    {
+      "connectorName": "postgresql",
+      "catalogName": "psql",
+      "catalogVersion": "default",
+      "schema": "_generated",
+      "table": "_generated_query",
+      "columns": [
+        {
+          "name": "_pfgnrtd_0",
+          "type": "decimal(38,2)"
+        }
+      ],
+      "fragmentId": "0",
+      "planNodeId": "135"
+    }
+  ],
+  "referencedTables": [
+    {
+      "catalog": "psql",
+      "schema": "tpcds",
+      "table": "store_sales",
+      "authorization": "nkorb",
+      "filters": [],
+      "columns": [
+        {
+          "column": "ss_ext_sales_price"
+        },
+        {
+          "column": "ss_sold_date_sk"
+        }
+      ],
+      "directlyReferenced": true,
+      "referenceChain": []
+    }
+  ],
+  "routines": [
+    {
+      "routine": "sum",
+      "authorization": "nkorb"
+    }
+  ],
+  "finalQueryInfo": true,
+  "resourceGroupId": [
+    "global"
+  ],
+  "queryType": "SELECT",
+  "retryPolicy": "NONE",
+  "pruned": false,
+  "version": {
+    "version": "477"
+  },
+  "scheduled": true,
+  "progressPercentage": 100.0,
+  "runningPercentage": 0.0
+}

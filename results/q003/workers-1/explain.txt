@@ -1,0 +1,73 @@
+"Trino version: 477
+Fragment 0 [SINGLE]
+    Output layout: [ca_state, count]
+    Output partitioning: SINGLE []
+    Output[columnNames = [ca_state, orders]]
+    │   Layout: [ca_state:char(2), count:bigint]
+    │   Estimates: {rows: 20 (1.25kB), cpu: 0, memory: 0B, network: 0B}
+    │   orders := count
+    └─ TopN[count = 20, orderBy = [count DESC NULLS LAST]]
+       │   Layout: [ca_state:char(2), count:bigint]
+       │   Estimates: {rows: 20 (1.25kB), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [ca_state:char(2), count:bigint]
+          │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [1]]
+                 Layout: [ca_state:char(2), count:bigint]
+
+Fragment 1 [HASH]
+    Output layout: [ca_state, count]
+    Output partitioning: SINGLE []
+    TopNPartial[count = 20, orderBy = [count DESC NULLS LAST]]
+    │   Layout: [ca_state:char(2), count:bigint]
+    └─ LocalExchange[partitioning = SINGLE]
+       │   Layout: [ca_state:char(2), count:bigint]
+       │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+       └─ TopNPartial[count = 20, orderBy = [count DESC NULLS LAST]]
+          │   Layout: [ca_state:char(2), count:bigint]
+          └─ LocalExchange[partitioning = ROUND_ROBIN]
+             │   Layout: [ca_state:char(2), count:bigint]
+             │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             └─ TopNPartial[count = 20, orderBy = [count DESC NULLS LAST]]
+                │   Layout: [ca_state:char(2), count:bigint]
+                └─ Aggregate[type = FINAL, keys = [ca_state]]
+                   │   Layout: [ca_state:char(2), count:bigint]
+                   │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+                   │   count := count(count_0)
+                   └─ LocalExchange[partitioning = HASH, arguments = [ca_state::char(2)]]
+                      │   Layout: [ca_state:char(2), count_0:bigint]
+                      │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+                      └─ RemoteSource[sourceFragmentIds = [2]]
+                             Layout: [ca_state:char(2), count_0:bigint]
+
+Fragment 2 [SOURCE]
+    Output layout: [ca_state, count_0]
+    Output partitioning: HASH [ca_state]
+    Aggregate[type = PARTIAL, keys = [ca_state]]
+    │   Layout: [ca_state:char(2), count_0:bigint]
+    │   count_0 := count(*)
+    └─ InnerJoin[criteria = (cs_bill_addr_sk = ca_address_sk), distribution = REPLICATED]
+       │   Layout: [ca_state:char(2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 6.18MB, network: 0B}
+       │   Distribution: REPLICATED
+       │   dynamicFilterAssignments = {ca_address_sk -> #df_471}
+       ├─ ScanFilter[table = mongodb:tpcds.catalog_sales constraint on [cs_sold_date_sk] columns=[cs_bill_addr_sk:bigint], dynamicFilters = {cs_bill_addr_sk = #df_471}]
+       │      Layout: [cs_bill_addr_sk:bigint]
+       │      Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │      cs_bill_addr_sk := cs_bill_addr_sk:bigint
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [ca_address_sk:bigint, ca_state:char(2)]
+          │   Estimates: {rows: 383000 (6.18MB), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [3]]
+                 Layout: [ca_address_sk:bigint, ca_state:char(2)]
+
+Fragment 3 [SOURCE]
+    Output layout: [ca_address_sk, ca_state]
+    Output partitioning: BROADCAST []
+    TableScan[table = psql:tpcds.customer_address tpcds.tpcds.customer_address columns=[ca_address_sk:bigint:int8, ca_state:char(2):bpchar]]
+        Layout: [ca_address_sk:bigint, ca_state:char(2)]
+        Estimates: {rows: 383000 (6.18MB), cpu: 6.18M, memory: 0B, network: 0B}
+        ca_state := ca_state:char(2):bpchar
+        ca_address_sk := ca_address_sk:bigint:int8
+
+"

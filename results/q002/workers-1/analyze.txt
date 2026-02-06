@@ -1,0 +1,38 @@
+trino> EXPLAIN (TYPE DISTRIBUTED) SELECT sum(cs_ext_sales_price) AS sales FROM mongodb.tpcds.catalog_sales WHERE cs_sold_date_sk BETWEEN 2451545 AND 2488070;
+                                                           Query Plan
+---------------------------------------------------------------------------------------------------------------------------------
+ Trino version: 477
+ Fragment 0 [SINGLE]
+     Output layout: [sum]
+     Output partitioning: SINGLE []
+     Output[columnNames = [sales]]
+     │   Layout: [sum:decimal(38,2)]
+     │   Estimates: {rows: 1 (17B), cpu: 0, memory: 0B, network: 0B}
+     │   sales := sum
+     └─ Aggregate[type = FINAL]
+        │   Layout: [sum:decimal(38,2)]
+        │   Estimates: {rows: 1 (17B), cpu: ?, memory: 17B, network: 0B}
+        │   sum := sum(sum_0)
+        └─ LocalExchange[partitioning = SINGLE]
+           │   Layout: [sum_0:varbinary]
+           │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+           └─ RemoteSource[sourceFragmentIds = [1]]
+                  Layout: [sum_0:varbinary]
+
+ Fragment 1 [SOURCE]
+     Output layout: [sum_0]
+     Output partitioning: SINGLE []
+     Aggregate[type = PARTIAL]
+     │   Layout: [sum_0:varbinary]
+     │   sum_0 := sum(cs_ext_sales_price)
+     └─ TableScan[table = mongodb:tpcds.catalog_sales constraint on [cs_sold_date_sk] columns=[cs_ext_sales_price:decimal(7,2)]]
+            Layout: [cs_ext_sales_price:decimal(7,2)]
+            Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+            cs_ext_sales_price := cs_ext_sales_price:decimal(7,2)
+
+
+(1 row)
+
+Query 20260206_195624_00197_t8t2g, FINISHED, 1 node
+Splits: 1 total, 1 done (100.00%)
+0.10 [0 rows, 0B] [0 rows/s, 0B/s]

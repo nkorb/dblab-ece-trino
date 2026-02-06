@@ -1,0 +1,14 @@
+"Trino version: 477
+Fragment 0 [SOURCE]
+    Output layout: [pfgnrtd]
+    Output partitioning: SINGLE []
+    Output[columnNames = [sales]]
+    │   Layout: [pfgnrtd:decimal(38,2)]
+    │   Estimates: {rows: 1 (17B), cpu: 0, memory: 0B, network: 0B}
+    │   sales := pfgnrtd
+    └─ TableScan[table = psql:Query[SELECT sum(""ss_ext_sales_price"") AS ""_pfgnrtd_0"" FROM ""tpcds"".""tpcds"".""store_sales"" WHERE (""ss_sold_date_sk"" >= ? AND ""ss_sold_date_sk"" <= ?)] columns=[_pfgnrtd_0:decimal(38,2):decimal]]
+           Layout: [pfgnrtd:decimal(38,2)]
+           Estimates: {rows: 1 (17B), cpu: 17, memory: 0B, network: 0B}
+           pfgnrtd := _pfgnrtd_0:decimal(38,2):decimal
+
+"
